@@ -1,0 +1,36 @@
+# Everything the pipeline reads lives here, so a run is described by this file
+# plus the seed.
+
+seed: 20260904
+
+data:
+  train_parquet: data/raw/m5_train.parquet
+  test_parquet: data/raw/m5_test.parquet
+  sample_store: CA_1          # the store committed as a sample so tests need no download
+
+# The M5 aggregation structure can be cut several ways. I use a strict tree down
+# the location then product path, so every bottom series has exactly one parent
+# at each level. Counts are asserted in the coherence check.
+hierarchy:
+  levels: [total, state, store, store_cat, store_dept, bottom]
+  expected_counts:
+    total: 1
+    state: 3
+    store: 10
+    store_cat: 30
+    store_dept: 70
+    bottom: 30490
+
+# Syntetos and Boylan (2005) classification. ADI is the average interval between
+# non zero demands, cv2 is the squared coefficient of variation of the non zero
+# demand sizes.
+intermittency:
+  adi_threshold: 1.32
+  cv2_threshold: 0.49
+
+evaluation:
+  horizon: 28
+  # The last `horizon` days of train are held out to fit reconciliation weights,
+  # so the weights never see the window they are scored on.
+  validation_horizon: 28
+  seasonal_period: 7

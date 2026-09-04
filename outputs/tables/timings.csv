@@ -1,0 +1,9 @@
+origin,method,seconds
+validation,seasonal_naive,0.037757833997602575
+validation,ses,3.9871497909989557
+validation,croston_sba,0.36584129099719576
+validation,gbm,7.85217137500149
+test,seasonal_naive,0.002535291998356115
+test,ses,4.440149791997101
+test,croston_sba,0.4495764589992177
+test,gbm,8.256487333001132

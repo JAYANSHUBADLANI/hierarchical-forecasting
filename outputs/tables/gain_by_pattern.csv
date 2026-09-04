@@ -1,0 +1,5 @@
+base,smooth,erratic,intermittent,lumpy
+croston_sba,0.0,0.0,0.01,0.0
+gbm,0.03,0.02,1.99,0.01
+seasonal_naive,8.98,5.29,22.73,20.35
+ses,0.0,0.0,0.0,0.0

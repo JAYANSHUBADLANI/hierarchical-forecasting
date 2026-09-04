@@ -1,0 +1,7 @@
+level,nodes,grand_total,max_abs_diff_vs_groupby,exact,all_levels_same_total
+total,1,66927173.0,0.0,True,True
+state,3,66927173.0,0.0,True,True
+store,10,66927173.0,0.0,True,True
+store_cat,30,66927173.0,0.0,True,True
+store_dept,70,66927173.0,0.0,True,True
+bottom,30490,66927173.0,0.0,True,True
