@@ -1,5 +1,7 @@
 # Forecasts that have to add up
 
+[![tests](https://github.com/JAYANSHUBADLANI/hierarchical-forecasting/actions/workflows/pytest.yml/badge.svg)](https://github.com/JAYANSHUBADLANI/hierarchical-forecasting/actions/workflows/pytest.yml)
+
 A store forecast that does not sum to the region forecast is not a modelling
 inconvenience. It is a plan nobody can act on, because two people reading two
 levels of it see two different futures.
@@ -28,19 +30,28 @@ intermittency. It is how bad the base forecast already was at that level.
 
 The pooled gradient boosting model is a good bottom level forecaster and a bad
 aggregate one, because nothing makes its 30,604 independent predictions agree.
-Reconciling it against the tree fixes that, and the size of the fix decays
-cleanly as you walk down the hierarchy:
+Reconciling it against the tree fixes that. The size of the fix decays as you walk
+down the hierarchy, and which weighting does the fixing changes on the way down:
 
-| level | GBM alone | GBM reconciled (wls_var) | improvement |
+| level | GBM alone | reconciled, wls_var | reconciled, wls_struct |
 | --- | --- | --- | --- |
-| total | 1.416 | **0.403** | 72% |
-| state | 1.635 | **0.616** | 62% |
-| store | 1.507 | **0.732** | 51% |
-| store_cat | 1.099 | **0.907** | 17% |
-| store_dept | 1.269 | 1.164 | 8% |
-| bottom | 0.944 | 0.930 | 1% |
+| total | 1.416 | **0.403** (72%) | 0.629 (56%) |
+| state | 1.635 | **0.616** (62%) | 0.808 (51%) |
+| store | 1.507 | **0.732** (51%) | 0.883 (41%) |
+| store_cat | 1.099 | **0.907** (17%) | 0.991 (10%) |
+| store_dept | 1.269 | 1.255 (1%) | **1.164** (8%) |
+| bottom | 0.944 | 0.942 (0%) | **0.930** (1%) |
 
-RMSSE, lower is better, 1.0 is the in sample seasonal naive error.
+RMSSE, lower is better, 1.0 is the in sample seasonal naive error. Percentages are
+improvement on the unreconciled GBM. Both columns are in
+`outputs/tables/accuracy_by_level.csv`.
+
+Variance weighting wins the top four levels by a wide margin and then loses both bottom
+levels to structural weighting. I have not isolated why. The plausible reading is that
+the variance weights are estimated, from residuals across 30,604 nodes, while the
+structural weights are read off the shape of the tree and cannot be estimated badly, so
+the estimated weights should hurt most where the series are shortest and sparsest. That
+is a hypothesis about this result rather than something measured here.
 
 That is the good news. The rest of this is the part I would want to be asked
 about.
